@@ -400,6 +400,7 @@ def create_post(
     group_id = create_or_get_group(scraped_info["サークル名"])
     post_excerpt = scraped_info["作品内容"]
     print(f"'抜粋を作成しました'{post_excerpt}")
+
     if "bl" in work_url:
         default_cate = 670  # 子カテゴリID
         parent_cate = 455  # 親カテゴリID
@@ -449,11 +450,16 @@ if __name__ == "__main__":
     is_first_time = True
     links = [
         "https://www.dlsite.com/girls/work/=/product_id/RJ01165480.html",
+        "https://www.dlsite.com/comic/work/=/product_id/BJ01205925.html",
         "https://www.dlsite.com/bl/work/=/product_id/RJ01165772.html",
         "https://www.dlsite.com/maniax/work/=/product_id/RJ01165959.html",
+        
     ]
     for link in links:
         work_url = link
+        if not any(keyword in work_url for keyword in ["girls", "bl", "maniax"]):
+            print(f"URL '{work_url}' はスキップされました。")
+            continue  # 次のループイテレーションに移る
         scraped_info = scrape_info(work_url)
         if scraped_info:
             title = scraped_info["title"]  # scrape_info 関数から取得したタイトルを使用
