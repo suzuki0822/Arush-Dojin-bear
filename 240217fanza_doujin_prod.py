@@ -30,8 +30,8 @@ params = {
     'service': 'doujin',
     'floor': 'digital_doujin',
     # 'keyword': '彼氏持ち学生バイト弓野ちゃんは 今日も店長に狙われる',
-    'hits': 10,
-    'gte_date': '2024-02-19T00:00:00',
+    'hits': 30,
+    'gte_date': '2024-01-01T00:00:00',
     'sort': 'rank',
     'output': 'json'
 }
@@ -136,7 +136,7 @@ for item in filtered_items:
     summary_text_element = soup.select_one('#l-areaVariableBoxWrap > div > div.l-areaProductSummary > div > div > div > p')
     if summary_text_element:
         summary_text = summary_text_element.get_text(strip=True)
-        post_content += f"<blockquote class='content-intro'><strong>作品内容:</strong> <p class='content-intro-content'>{summary_text}</p></blockquote>"
+        post_content += f"<blockquote class='content-intro'><strong>漫画『{title}』の作品内容:</strong> <p class='content-intro-content'>{summary_text} 今すぐ漫画『{title}』を無料で試し読み！</p></blockquote>"
         
     target_elements = soup.select('#l-areaVariableBoxWrap div.l-areaVariableBox div.l-areaVariableBoxGroup div.l-areaProductImage ul.productPreview li img')
     image_urls = [element.get('src') for element in target_elements][1:]  # 最初の画像を除外
@@ -158,7 +158,7 @@ for item in filtered_items:
                 image_url_absolute = f"{blog_url}/wp-content/uploads/{year}/{month}/{file_name}"
                 post_content += f"<img src=\"{image_url_absolute}\" alt=\"Additional Image\">\n"
 
-    post_content += f"<br><br><a href='{affiliate_url}'class ='dl-btn'>詳しくはこちら！</a><br><br>\n"
+    post_content += f"<br><br><a href='{affiliate_url}'class ='dl-btn'>無料で更に漫画『{title}』を試し読み！</a><br><br>\n"
 
     # タグとカテゴリーの処理（ここでは省略。実際には、必要に応じてタグやカテゴリーを作成または検索し、そのIDを使用します）
     tag_ids = []  # tag_idsを初期化

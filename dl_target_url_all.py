@@ -12,7 +12,7 @@ import traceback
 # 認証情報
 api_user = "suzuki"
 api_password = "U1EA atcm azSG McSY oQXp B3WZ"
-blog_url = "http://localhost:10047/"
+blog_url = "https://dojin-bear.net/"
 post_api_url = f"{blog_url}/wp-json/wp/v2/posts"
 media_api_url = f"{blog_url}/wp-json/wp/v2/media"
 group_api_url = f"{blog_url}/wp-json/wp/v2/group"
@@ -201,7 +201,7 @@ def get_existing_post_titles():
     while True:
         response = requests.get(
             post_api_url,
-            params={"per_page": 100, "page": page},
+            params={"per_page": 100, "page": page, "status": "any"},
             auth=(api_user, api_password),
         )
         if response.status_code == 200:
@@ -376,7 +376,8 @@ def create_post(
         <div class="content-age"><strong>年齢指定:</strong> <p class="fcontent-age-content">{scraped_info['年齢指定']}</p></div>
         <div class="launch-day"><strong>販売日:</strong> <p class="launch-day-content">{sale_date}</p></div>
         <blockquote class="content-intro">
-            <strong>作品内容:</strong> <p class="content-intro-content">{scraped_info['作品内容']}</p>
+                        <strong>漫画『{title}』の作品内容:</strong> <p class="content-intro-content">{scraped_info['作品内容']}
+            今すぐ漫画『{title}』を無料で試し読み！</p>
         </blockquote>
     """
 
@@ -393,7 +394,7 @@ def create_post(
                 if uploaded_img_url:
                     post_content += f'<img src="{uploaded_img_url}" alt="サンプル画像">'
 
-    post_content += f"<a href='{text_wname}'class='dl-btn'>詳しくはこちら！</a>"
+    post_content += f"<a href='{text_wname}'class='dl-btn'>無料で更に漫画『{title}』を試し読み！</a>"
 
     # カテゴリとグループのIDを取得
     category_id = create_or_get_category(scraped_info["作品形式"])
@@ -421,7 +422,7 @@ def create_post(
         categories.append(parent_cate)
     if category_id:
         categories.append(category_id)
-        
+
     # 投稿データの生成
     post_data = {
         "title": title,
@@ -449,11 +450,7 @@ if __name__ == "__main__":
     driver = login_and_get_data(login_url, email, password)
     is_first_time = True
     links = [
-        "https://www.dlsite.com/girls/work/=/product_id/RJ01165480.html",
-        "https://www.dlsite.com/comic/work/=/product_id/BJ01205925.html",
-        "https://www.dlsite.com/bl/work/=/product_id/RJ01165772.html",
-        "https://www.dlsite.com/maniax/work/=/product_id/RJ01165959.html",
-        
+        "https://www.dlsite.com/maniax/work/=/product_id/RJ01131907.html",
     ]
     for link in links:
         work_url = link

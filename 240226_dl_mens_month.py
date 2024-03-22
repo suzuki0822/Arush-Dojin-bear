@@ -303,7 +303,8 @@ def create_post(title, scraped_info, existing_titles, text_wname, text_main_html
         <div class="content-age"><strong>年齢指定:</strong> <p class="fcontent-age-content">{scraped_info['年齢指定']}</p></div>
         <div class="launch-day"><strong>販売日:</strong> <p class="launch-day-content">{sale_date}</p></div>
         <blockquote class="content-intro">
-            <strong>作品内容:</strong> <p class="content-intro-content">{scraped_info['作品内容']}</p>
+            <strong>漫画『{title}』の作品内容:</strong> <p class="content-intro-content">{scraped_info['作品内容']}
+            今すぐ漫画『{title}』を無料で試し読み！</p>
         </blockquote>
     """
     
@@ -321,7 +322,7 @@ def create_post(title, scraped_info, existing_titles, text_wname, text_main_html
                 if uploaded_img_url:
                     post_content += f'<img src="{uploaded_img_url}" alt="サンプル画像">'
     
-    post_content += f"<a href='{text_wname}'class='dl-btn'>詳しくはこちら！</a>"
+    post_content += f"<a href='{text_wname}'class='dl-btn'>無料で更に漫画『{title}』を試し読み！</a>"
 
     # カテゴリとグループのIDを取得
     category_id = create_or_get_category(scraped_info['作品形式'])

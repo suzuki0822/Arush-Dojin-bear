@@ -33,7 +33,12 @@ def login_and_get_data(login_url, email, password):
 if __name__ == "__main__":
     driver = login_and_get_data(login_url, email, password)
     is_first_time = True
-    links = ["https://www.dlsite.com/maniax/circle/profile/=/maker_id/RG01013936.html"]
+    links = ["https://www.dlsite.com/maniax/circle/profile/=/maker_id/RG01013936.html",
+             "https://www.dlsite.com/maniax/circle/profile/=/maker_id/RG49949.html",
+             "https://www.dlsite.com/maniax/circle/profile/=/maker_id/RG01012594.html",
+             "https://www.dlsite.com/maniax/circle/profile/=/maker_id/RG31931.html",
+             "https://www.dlsite.com/maniax/circle/profile/=/maker_id/RG06917.html",            
+             ]
     titles = []  # タイトルを格納するリスト
     hrefs = []  # URLを格納するリスト
     for link in links:

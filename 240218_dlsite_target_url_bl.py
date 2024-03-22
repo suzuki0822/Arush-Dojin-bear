@@ -167,7 +167,7 @@ def get_existing_post_titles():
     page = 1
     existing_titles = set()
     while True:
-        response = requests.get(post_api_url, params={'per_page': 100, 'page': page}, auth=(api_user, api_password))
+        response = requests.get(post_api_url, params={'per_page': 100, 'page': page, 'status': 'any'}, auth=(api_user, api_password))
         if response.status_code == 200:
             posts = response.json()
             if not posts:  # ページの終わりに達したらループを終了
@@ -286,7 +286,7 @@ def get_image_url(image_id):
             return image_url
     return None
         
-def create_post(title, scraped_info, existing_titles, text_wname, text_main_html, driver):  # 引数名を text_main_html に変更
+def create_post(title, scraped_info, existing_titles, text_wname, text_main_html, driver, work_url):  # 引数名を text_main_html に変更
     # タイトルが既に存在する場合はスキップ
     if title in existing_titles:
         print(f"記事「{title}」は既に存在しています。スキップします。")
@@ -305,7 +305,8 @@ def create_post(title, scraped_info, existing_titles, text_wname, text_main_html
         <div class="content-age"><strong>年齢指定:</strong> <p class="fcontent-age-content">{scraped_info['年齢指定']}</p></div>
         <div class="launch-day"><strong>販売日:</strong> <p class="launch-day-content">{sale_date}</p></div>
         <blockquote class="content-intro">
-            <strong>作品内容:</strong> <p class="content-intro-content">{scraped_info['作品内容']}</p>
+                        <strong>漫画『{title}』の作品内容:</strong> <p class="content-intro-content">{scraped_info['作品内容']}
+            今すぐ漫画『{title}』を無料で試し読み！</p>
         </blockquote>
     """
     
@@ -323,13 +324,14 @@ def create_post(title, scraped_info, existing_titles, text_wname, text_main_html
                 if uploaded_img_url:
                     post_content += f'<img src="{uploaded_img_url}" alt="サンプル画像">'
     
-    post_content += f"<a href='{text_wname}'class='dl-btn'>詳しくはこちら！</a>"
+    post_content += f"<a href='{text_wname}'class='dl-btn'>無料で更に漫画『{title}』を試し読み！</a>"
 
     # カテゴリとグループのIDを取得
     category_id = create_or_get_category(scraped_info['作品形式'])
     group_id = create_or_get_group(scraped_info['サークル名'])
     post_excerpt = (scraped_info['作品内容'])
     print(f"'抜粋を作成しました'{post_excerpt}")
+    
     default_cate = 670  # 子カテゴリID
     parent_cate = 455   # 親カテゴリID
     categories = [default_cate, parent_cate]

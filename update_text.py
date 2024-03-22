@@ -1,16 +1,16 @@
 import requests
 from requests.auth import HTTPBasicAuth
-import requests
+from lxml import html
+import html as html_converter
 
 # 認証情報
 username = "suzuki"
 application_password = "U1EA atcm azSG McSY oQXp B3WZ"
 
 # WordPressのサイトURL
-base_url = "http://localhost:10047/wp-json/wp/v2"
+base_url = "https://dojin-bear.net/wp-json/wp/v2"
 
 
-# すべての記事を取得する
 # すべての記事を取得する
 def get_all_posts():
     all_posts = []
@@ -48,24 +48,44 @@ def modify_and_update_posts():
     posts = get_all_posts()
     if posts:
         for post in posts:
+            post_id = post["id"]
             content = post["content"]["rendered"]
             title = post["title"]["rendered"]
-            # 指定されたテキストパターンを探し、変更を加える
-            new_content = content.replace("作品内容:", f"漫画『{title}』の作品内容:")
-            if "詳しくはこちら！" in new_content:
-                new_content = new_content.replace(
-                    "詳しくはこちら！", f"無料で更に漫画『{title}』を試し読み！"
+            tree = html.fromstring(content)
+
+            # ここでXPathを使って特定の要素を探し、条件に応じて置換する
+            # 例えば、XPathで指定された要素のテキストが特定の文字列と一致する場合に置換する
+            # ※以下のXPathは例です。実際の要件に合わせて調整してください。
+            xpath_expressions = [
+                (
+                    f'//*[@id="post-{post_id}"]/div[1]/p[2]/a',
+                    "詳しくはこちら！",
+                    f"無料で更に漫画『{title}』を試し読み！",
+                ),
+                (
+                    f'//*[@id="post-{post_id}"]/div[1]/blockquote/p[1]/strong',
+                    "作品内容:",
+                    f"漫画『{title}』の作品内容：",
+                ),
+            ]
+
+            for xpath, match, replacement in xpath_expressions:
+                elements = tree.xpath(xpath)
+                for element in elements:
+                    if element.text == match:
+                        element.text = replacement
+
+            new_content = html_converter.unescape(
+                html.tostring(
+                    tree, pretty_print=True, method="html", encoding="unicode"
                 )
-            if "作品内容:" in content and "</blockquote>" in new_content:
-                new_content = new_content.replace(
-                    "</blockquote>",
-                    f"<p> 今すぐ漫画『{title}』を無料で試し読み！</p></blockquote>",
-                )
+            )
+
             # 更新された内容で記事を更新する
-            if update_post_content(post["id"], new_content):
-                print(f"Post {post['id']} updated.")
+            if update_post_content(post_id, new_content):
+                print(f"Post {post_id} updated.")
             else:
-                print(f"Post {post['id']} not updated or not found.")
+                print(f"Post {post_id} not updated or not found.")
 
 
 # 実行
